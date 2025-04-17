@@ -77,8 +77,6 @@ jobs:
           port: ${{ secrets.PORT }}
           script: | 
             cd /srv/www/lund/abdel/project_crm-actions # andra gången 
-<<<<<<< HEAD
+
             git pull # andra gången
-=======
-            git pull # andra gången
->>>>>>> 3252c18c961b0f5dca8b09f89f5ba1e82a1a0e9c
+
