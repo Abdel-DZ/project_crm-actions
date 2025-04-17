@@ -3,10 +3,10 @@ using Npgsql;
 public class Database
 {
     
-    private readonly string _host = "localhost";
-    private readonly string _port = "5432";
+    private readonly string _host = "217.76.56.135";
+    private readonly string _port = "5435";
     private readonly string _username = "postgres";
-    private readonly string _password = "Palestro!2024!"; // root OR postgres
+    private readonly string _password = "InsecureGorillaPukes33"; // root OR postgres
     private readonly string _database = "postgres";
     private NpgsqlDataSource _connection;
     
