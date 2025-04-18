@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "server", "server\server.csproj", "{7E5846FD-1321-4056-AD82-D0940E5BDABC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "E2ETesting", "..\E2ETesting-main\E2ETesting.csproj", "{0C365A28-7743-4063-BB09-434D5002FB31}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "E2ETesting", "\E2ETesting-main\E2ETesting.csproj", "{0C365A28-7743-4063-BB09-434D5002FB31}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
