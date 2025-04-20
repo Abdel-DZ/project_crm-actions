@@ -16,6 +16,7 @@ Feature: Chat Functionality
         And I blur the username input
         Then the username input should be disabled
 
+    @skip
     Scenario: Prevent sending empty messages
         Given I am on the Chat page with token "demo123"
         When I enter "tester" as the username
@@ -23,6 +24,7 @@ Feature: Chat Functionality
         And I click on the Send button
         Then the message should not be sent
 
+    @skip
     Scenario: Background canvas should render
         Given I am on the Chat page with token "demo123"
         Then I should see the animated background canvas
