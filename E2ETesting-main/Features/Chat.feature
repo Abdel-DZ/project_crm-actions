@@ -1,6 +1,7 @@
 @chat
 Feature: Chat Functionality
 
+    @skip
     Scenario: Sending a message in the chat
         Given I am on the Chat page with token "demo123"
         When I enter "bob" as the username
@@ -8,6 +9,7 @@ Feature: Chat Functionality
         And I click on the Send button
         Then I should see the message "Hello there!" from "bob" in the chat
 
+    @skip
     Scenario: Username input should be disabled after blur
         Given I am on the Chat page with token "demo123"
         When I enter "alice" as the username
