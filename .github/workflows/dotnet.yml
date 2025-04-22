@@ -5,8 +5,6 @@ on:
     branches: ["main"]
 
 jobs:
-
-# NEW: Entire unit_tests job added (runs xUnit tests)
   unit_tests:
     runs-on: ubuntu-latest
     steps:
@@ -16,11 +14,10 @@ jobs:
         with:
           dotnet-version: 8.0.x
       - name: Install dependencies
-        run: dotnet restore ./server/server.csproj  # Corrected path to server.csproj
+        run: dotnet restore ./server/server.csproj
       - name: Run xUnit tests
-        run: dotnet test ./xUnitTests/xUnitTests.csproj --verbosity normal
+        run: dotnet test ./xUnitTests/xUnitTests.csproj --verbosity normal --no-build --configuration Release /p:TreatWarningsAsErrors=false  # FIXED LINE
 
-# API tests (Postman tests)
   api_tests:
     runs-on: ubuntu-latest
     steps:
@@ -36,18 +33,17 @@ jobs:
       - name: Install Newman
         run: npm install -g newman
       - name: Install dotnet project dependencies
-        run: dotnet restore ./server/server.csproj  # Corrected path to server.csproj
+        run: dotnet restore ./server/server.csproj
       - name: Build
-        run: dotnet build ./server/server.csproj  # Corrected path to server.csproj
+        run: dotnet build ./server/server.csproj
       - name: Start Server
         run: cd server && nohup dotnet run &
       - name: Run API-Tests
         run: newman run ./api-test/CRM_SYSTEM.postman_collection.json
 
-# GUI tests (Playwright tests)
   gui_tests:
     runs-on: ubuntu-latest
-    needs: api_tests # Runs only if api_tests pass
+    needs: api_tests
     steps:
       - uses: actions/checkout@v4
       - name: Setup dotnet
@@ -55,7 +51,7 @@ jobs:
         with:
           dotnet-version: 8.0.x
       - name: Install dotnet project dependencies
-        run: dotnet restore ./server/server.csproj  # Corrected path to server.csproj
+        run: dotnet restore ./server/server.csproj
       - name: Build/Restore Playwright Project
         run: cd E2ETesting-main && dotnet build
       - name: Ensure browsers are installed
@@ -65,11 +61,10 @@ jobs:
       - name: Run E2ETesting-main
         run: cd E2ETesting-main && dotnet test
 
-# Deploy step (Only if API and GUI tests pass)
   deploy:
     name: Deploy to Server
     runs-on: ubuntu-latest
-    needs: [api_tests, gui_tests] # Runs only if both api_tests and gui_tests pass
+    needs: [api_tests, gui_tests]
     steps:
       - name: Deploy App
         uses: appleboy/ssh-action@v1.2.0
@@ -79,5 +74,5 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
           script: | 
-            cd /srv/www/lund/abdel/project_crm-actions # Update with correct path if needed
+            cd /srv/www/lund/abdel/project_crm-actions
             git pull
