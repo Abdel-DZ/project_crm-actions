@@ -11,4 +11,4 @@ Feature: Change Password with Validation and API Integration
         Examples:
           | email           | newPassword | message                    |
           | Sara@gmail.com  | newPass123  | You changed your password! | 
-          | samira@test.com | newPass456  | You changed your password! |
+          | anna.k@mail.com | newPass456  | You changed your password! |
