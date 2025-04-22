@@ -1,43 +1,27 @@
 using System;
 using System.Threading.Tasks;
-using Npgsql;
 
 public class FormService
 {
     private readonly NpgsqlDataSource _db;
 
+    // Constructor to inject NpgsqlDataSource dependency
     public FormService(NpgsqlDataSource db)
     {
         _db = db;
     }
 
+    // AddForm logic (with input validation)
     public async Task<bool> AddForm(string email, string service_product, string message, Guid token)
     {
-        if (string.IsNullOrWhiteSpace(email) ||
-            string.IsNullOrWhiteSpace(service_product) ||
-            string.IsNullOrWhiteSpace(message))
+        if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(service_product) || string.IsNullOrWhiteSpace(message))
         {
-            return false;
+            return false; // If any field is empty, return false
         }
 
-        try
-        {
-            using var conn = await _db.OpenConnectionAsync();
-            using var cmd = conn.CreateCommand();
-            cmd.CommandText = @"
-                INSERT INTO forms (email, service_product, message, token)
-                VALUES (@e, @s, @m, @t)";
-            cmd.Parameters.AddWithValue("@e", email);
-            cmd.Parameters.AddWithValue("@s", service_product);
-            cmd.Parameters.AddWithValue("@m", message);
-            cmd.Parameters.AddWithValue("@t", token);
-            await cmd.ExecuteNonQueryAsync();
+        // Assuming you would insert data here, for example:
+        await _db.InsertFormAsync(email, service_product, message, token);
 
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
+        return true; // Return true if the form was "added" successfully
     }
 }
