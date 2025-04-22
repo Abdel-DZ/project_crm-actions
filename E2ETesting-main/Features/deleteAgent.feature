@@ -8,9 +8,6 @@ Feature: Delete Agent
 
         Examples:
           | agentId |
-          | 6       |
-          | 7       |
-          | 8       |
-          | 9       |
-          | 10      |
-          | 11      |
+          | 13       |
+          | 39       |
+       
