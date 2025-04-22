@@ -42,26 +42,28 @@ jobs:
         run: newman run ./api-test/CRM_SYSTEM.postman_collection.json
 
   gui_tests:
-    runs-on: ubuntu-latest
-    needs: api_tests
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup dotnet
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: 8.0.x
-      - name: Install dotnet project dependencies
-        run: dotnet restore ./server/server.csproj
-      - name: Build/Restore Playwright Project
-        run: cd E2ETesting-main && dotnet build
-      - name: Ensure browsers are installed
-        run: cd E2ETesting-main && pwsh bin/Debug/net8.0/playwright.ps1 install --with-deps
-      - name: Start server
-        run: cd server && nohup dotnet run &
-      - name: Run E2ETesting-main
-        run: |
-          cd E2ETesting-main
-          dotnet test --filter "FullyQualifiedName!~@skip" -- Playwright.LaunchOptions.Headless=true
+  runs-on: ubuntu-latest
+  needs: api_tests
+  steps:
+    - uses: actions/checkout@v4
+    - name: Setup dotnet
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+    - name: Install dependencies
+      run: dotnet restore ./server/server.csproj
+    - name: Build/Restore Playwright Project
+      run: |
+        cd E2ETesting-main
+        dotnet build /p:PlaywrightHeadless=true
+    - name: Install browsers
+      run: cd E2ETesting-main && pwsh bin/Debug/net8.0/playwright.ps1 install --with-deps
+    - name: Start server
+      run: cd server && nohup dotnet run &
+    - name: Run tests
+      run: |
+        cd E2ETesting-main
+        dotnet test --filter "FullyQualifiedName!~@skip" -- Playwright.LaunchOptions.Headless=true Playwright.LaunchOptions.SlowMo=0
 
   deploy:
     name: Deploy to Server
