@@ -5,6 +5,20 @@ on:
     branches: ["main"]
 
 jobs:
+
+# NEW: Entire unit_tests job added (runs xUnit tests)
+  unit_tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Install dependencies
+        run: dotnet restore
+      - name: Run xUnit tests
+        run: dotnet test ./xUnitTests/xUnitTests.csproj --verbosity normal
   # Name of the job/test
   api_tests:
     runs-on: ubuntu-latest
