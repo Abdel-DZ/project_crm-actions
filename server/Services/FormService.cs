@@ -20,8 +20,19 @@ public class FormService
             return false; // If any field is empty, return false
         }
 
-        // Assuming you would insert data here, for example:
-        await _db.InsertFormAsync(email, service_product, message, token);
+        // Using NpgsqlCommand to execute an SQL insert
+        var query = "INSERT INTO FormData (Email, ServiceProduct, Message, Token) VALUES (@Email, @ServiceProduct, @Message, @Token)";
+
+        // Execute the query asynchronously
+        using (var command = _db.CreateCommand(query))
+        {
+            command.Parameters.AddWithValue("Email", email);
+            command.Parameters.AddWithValue("ServiceProduct", service_product);
+            command.Parameters.AddWithValue("Message", message);
+            command.Parameters.AddWithValue("Token", token);
+
+            await command.ExecuteNonQueryAsync();
+        }
 
         return true; // Return true if the form was "added" successfully
     }
