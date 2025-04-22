@@ -1,22 +1,34 @@
 using NSubstitute;
 using Xunit;
 using Npgsql;
-using server;  // Assuming your FormService is in the 'server' namespace
+using System.Reflection;
+using server;
 
 public class FormServiceTests
 {
+    private static async Task InvokeAddForm(string email, string service_product, string message, Guid token)
+    {
+        var method = typeof(Program).GetMethod("AddForm", BindingFlags.NonPublic | BindingFlags.Static);
+        await (Task)method.Invoke(null, new object[] { email, service_product, message, token });
+    }
+
     [Fact]
     public async Task AddForm_ShouldReject_WhenFieldsAreEmpty()
     {
         // Arrange
         var fakeDb = Substitute.For<NpgsqlDataSource>();
-        var service = new FormService(fakeDb);  // Use FormService instead of Program
+        var fakeDatabase = Substitute.For<Database>();
+        fakeDatabase.Connection().Returns(fakeDb);
+
+        // Replace the Database instance in Program.cs via reflection
+        var field = typeof(Program).GetField("_database", BindingFlags.NonPublic | BindingFlags.Static);
+        field.SetValue(null, fakeDatabase);
 
         // Act
-        var result = await service.AddForm("", "product", "msg", Guid.NewGuid());
+        await InvokeAddForm("", "product", "msg", Guid.NewGuid());
 
         // Assert
-        Assert.False(result);
+        fakeDb.DidNotReceive().CreateCommand(Arg.Any<string>());
     }
 
     [Fact]
@@ -26,13 +38,18 @@ public class FormServiceTests
         var fakeDb = Substitute.For<NpgsqlDataSource>();
         var fakeCmd = Substitute.For<NpgsqlCommand>();
         fakeDb.CreateCommand(Arg.Any<string>()).Returns(fakeCmd);
-        var service = new FormService(fakeDb);  // Use FormService instead of Program
+        
+        var fakeDatabase = Substitute.For<Database>();
+        fakeDatabase.Connection().Returns(fakeDb);
+
+        // Replace the Database instance in Program.cs via reflection
+        var field = typeof(Program).GetField("_database", BindingFlags.NonPublic | BindingFlags.Static);
+        field.SetValue(null, fakeDatabase);
 
         // Act
-        var result = await service.AddForm("valid@email.com", "valid-product", "valid-msg", Guid.NewGuid());
+        await InvokeAddForm("valid@email.com", "valid-product", "valid-msg", Guid.NewGuid());
 
         // Assert
-        Assert.True(result);
-        await fakeCmd.Received().ExecuteNonQueryAsync();
+        await fakeCmd.Received(1).ExecuteNonQueryAsync();
     }
 }
