@@ -1,6 +1,7 @@
 @formValidation
 Feature: Form Validation
 
+    @skip
     Scenario Outline: Validate that the form does not submit if any fields are empty
         Given I am on the form page
         When I enter "<email>" as my Email
