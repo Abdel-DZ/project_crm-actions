@@ -1,35 +1,19 @@
+using System;
+using System.Threading.Tasks;
 using Xunit;
-using server;
+using NSubstitute;
+using Npgsql;
 
 public class FormServiceTests
 {
     [Fact]
-    public void AddForm_ShouldReject_WhenFieldsAreEmpty()
+    public async Task AddForm_ShouldReturnFalse_WhenFieldsAreEmpty()
     {
-        // Arrange
-        var form = new Form
-        {
-            email = "",
-            service_product = "product",
-            message = "msg"
-        };
+        var fakeDb = Substitute.For<NpgsqlDataSource>();
+        var service = new FormService(fakeDb);
 
-        // Act & Assert
-        Assert.True(string.IsNullOrWhiteSpace(form.email)); // Just tests the validation condition
-    }
+        var result = await service.AddForm("", "product", "msg", Guid.NewGuid());
 
-    [Fact]
-    public void AddForm_ShouldAccept_WhenFieldsAreValid()
-    {
-        // Arrange
-        var form = new Form
-        {
-            email = "valid@test.com",
-            service_product = "product",
-            message = "msg"
-        };
-
-        // Act & Assert
-        Assert.False(string.IsNullOrWhiteSpace(form.email)); // Just tests the validation condition
+        Assert.False(result);
     }
 }
