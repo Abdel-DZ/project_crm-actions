@@ -1,6 +1,6 @@
+using System;
+using System.Threading.Tasks;
 using Npgsql;
-
-namespace server;
 
 public class FormService
 {
@@ -13,22 +13,31 @@ public class FormService
 
     public async Task<bool> AddForm(string email, string service_product, string message, Guid token)
     {
-        if (string.IsNullOrWhiteSpace(email) || 
-            string.IsNullOrWhiteSpace(service_product) || 
+        if (string.IsNullOrWhiteSpace(email) ||
+            string.IsNullOrWhiteSpace(service_product) ||
             string.IsNullOrWhiteSpace(message))
         {
             return false;
         }
 
-        await using var cmd = _db.CreateCommand(
-            "INSERT INTO forms (email, service_product, message, token) VALUES (@email, @service_product, @message, @token)");
-        
-        cmd.Parameters.AddWithValue("@email", email);
-        cmd.Parameters.AddWithValue("@service_product", service_product);
-        cmd.Parameters.AddWithValue("@message", message);
-        cmd.Parameters.AddWithValue("@token", token);
+        try
+        {
+            using var conn = await _db.OpenConnectionAsync();
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = @"
+                INSERT INTO forms (email, service_product, message, token)
+                VALUES (@e, @s, @m, @t)";
+            cmd.Parameters.AddWithValue("@e", email);
+            cmd.Parameters.AddWithValue("@s", service_product);
+            cmd.Parameters.AddWithValue("@m", message);
+            cmd.Parameters.AddWithValue("@t", token);
+            await cmd.ExecuteNonQueryAsync();
 
-        await cmd.ExecuteNonQueryAsync();
-        return true;
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 }
