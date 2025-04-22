@@ -1,37 +1,38 @@
 using NSubstitute;
-using System;
-using System.Threading.Tasks;
 using Xunit;
 using Npgsql;
-
+using server;
 
 public class FormServiceTests
 {
     [Fact]
     public async Task AddForm_ShouldReturnFalse_WhenFieldsAreEmpty()
     {
-        // Arrange: mock the NpgsqlDataSource dependency
-        var fakeDb = Substitute.For<NpgsqlDataSource>();  // Mock the NpgsqlDataSource dependency
-        var service = new FormService(fakeDb);  // Pass the mocked db into FormService
+        // Arrange
+        var fakeDb = Substitute.For<NpgsqlDataSource>();
+        var service = new FormService(fakeDb);
 
-        // Act: test AddForm with empty email
+        // Act
         var result = await service.AddForm("", "product", "msg", Guid.NewGuid());
 
-        // Assert: expect false because email is empty
+        // Assert
         Assert.False(result);
     }
 
     [Fact]
     public async Task AddForm_ShouldReturnTrue_WhenFieldsAreValid()
     {
-        // Arrange: mock the NpgsqlDataSource dependency
-        var fakeDb = Substitute.For<NpgsqlDataSource>();  // Mock the NpgsqlDataSource dependency
-        var service = new FormService(fakeDb);  // Pass the mocked db into FormService
+        // Arrange
+        var fakeDb = Substitute.For<NpgsqlDataSource>();
+        var fakeCmd = Substitute.For<NpgsqlCommand>();
+        fakeDb.CreateCommand(Arg.Any<string>()).Returns(fakeCmd);
+        
+        var service = new FormService(fakeDb);
 
-        // Act: test AddForm with valid data
-        var result = await service.AddForm("email@example.com", "product", "message", Guid.NewGuid());
+        // Act
+        var result = await service.AddForm("test@test.com", "product", "msg", Guid.NewGuid());
 
-        // Assert: expect true because fields are valid
+        // Assert
         Assert.True(result);
     }
 }
