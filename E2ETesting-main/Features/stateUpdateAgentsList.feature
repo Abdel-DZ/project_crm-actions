@@ -8,5 +8,5 @@ Feature: State Update for Agents List
 
         Examples:
           | firstName | email            |
-          | John      | john@example.com |
-          | Jane      | jane@example.com |
+          | Theodor     | theodor@hotmail.com |
+          | Lars      | LarsLarsson@gmail.com |
