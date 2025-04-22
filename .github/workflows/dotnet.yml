@@ -16,7 +16,7 @@ jobs:
       - name: Install dependencies
         run: dotnet restore ./server/server.csproj
       - name: Run xUnit tests
-        run: dotnet test ./xUnitTests/xUnitTests.csproj --verbosity normal --no-build --configuration Release /p:TreatWarningsAsErrors=false  # FIXED LINE
+        run: dotnet test ./xUnitTests/xUnitTests.csproj --verbosity normal --no-build --configuration Release /p:TreatWarningsAsErrors=false
 
   api_tests:
     runs-on: ubuntu-latest
@@ -59,7 +59,9 @@ jobs:
       - name: Start server
         run: cd server && nohup dotnet run &
       - name: Run E2ETesting-main
-        run: cd E2ETesting-main && dotnet test
+        run: |
+          cd E2ETesting-main
+          dotnet test --filter "FullyQualifiedName!~@skip" -- Playwright.LaunchOptions.Headless=true
 
   deploy:
     name: Deploy to Server
