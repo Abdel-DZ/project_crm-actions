@@ -15,7 +15,7 @@ namespace E2ETests
         public FormValidationSteps()
         {
             _playwright = Playwright.CreateAsync().Result;
-            _browser = _playwright.Chromium.LaunchAsync(new() { Headless = false }).Result;
+            _browser = _playwright.Chromium.LaunchAsync(new() { Headless = true }).Result;
             _context = _browser.NewContextAsync().Result;
             _page = _context.NewPageAsync().Result;
         }
