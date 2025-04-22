@@ -17,8 +17,6 @@ jobs:
           dotnet-version: 8.0.x
       - name: Install dependencies
         run: dotnet restore ./server/server.csproj  # Corrected path to server.csproj
-      - name: Build the project
-        run: dotnet build ./server/server.csproj
       - name: Run xUnit tests
         run: dotnet test ./xUnitTests/xUnitTests.csproj --verbosity normal
 
@@ -39,8 +37,8 @@ jobs:
         run: npm install -g newman
       - name: Install dotnet project dependencies
         run: dotnet restore ./server/server.csproj  # Corrected path to server.csproj
-      - name: Build the project
-        run: dotnet build ./server/server.csproj
+      - name: Build
+        run: dotnet build ./server/server.csproj  # Corrected path to server.csproj
       - name: Start Server
         run: cd server && nohup dotnet run &
       - name: Run API-Tests
