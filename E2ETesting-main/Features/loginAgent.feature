@@ -11,5 +11,5 @@ Feature: Login functionality for Agents
 
         Examples:
           | email               | password | role  |
-          | Sara@gmail.com      | sara123  | agent |
-          | valllle25@gmail.com | hej123   | agent |
+          | Sara@gmail.com      | newPass123  | agent |
+          | molly@gmail.com | 11114444   | agent |
