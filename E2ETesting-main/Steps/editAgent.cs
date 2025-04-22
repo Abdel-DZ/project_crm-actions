@@ -11,7 +11,7 @@ public class EditAgentSteps
     public EditAgentSteps()
     {
         var playwright = Playwright.CreateAsync().GetAwaiter().GetResult();
-        var browser = playwright.Chromium.LaunchAsync(new() { Headless = false }).GetAwaiter().GetResult();
+        var browser = playwright.Chromium.LaunchAsync(new() { Headless = true }).GetAwaiter().GetResult();
         _page = browser.NewPageAsync().GetAwaiter().GetResult();
     }
 
